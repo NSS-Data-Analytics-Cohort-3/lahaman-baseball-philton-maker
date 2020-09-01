@@ -143,3 +143,72 @@ WHERE most_wins_year.yearid >= '1970') AS combo_table;
 Q7: Seattle Mariners 116 didn't win. LA Dodgers 63 did win, there was a players strike which let them get to the WS
 with so few wins. If you exclude 1981, the least wins to win the World
 Series was 83 by the St. Louis Cardinals in 2006. The team with the most wins wins the world series %25.53 of the time.*/
+
+/*SELECT 
+	DISTINCT TRIM(parks.park_name),
+	franchname, 
+	homegames.attendance, 
+	games, 
+	(homegames.attendance / games::numeric) AS avg_attendance
+FROM homegames
+LEFT JOIN parks
+ON homegames.park = parks.park
+LEFT JOIN teams
+ON homegames.team = teams.teamid
+LEFT JOIN teamsfranchises
+ON teams.franchid = teamsfranchises.franchid
+WHERE games >= '10'
+	AND
+	year = '2016'
+	AND teams.franchid IN (
+		SELECT franchid
+		FROM teamsfranchises
+		WHERE active = 'Y')
+ORDER BY avg_attendance DESC
+LIMIT 12;*/
+/*Q8: The top 5 average attended team home games were:
+LA Dodgers at Dodger Stadium with 45719.9 avg,
+St. Louis Cardinals at Busch Stadium III with, 42524.6 avg,
+Toronto Blue Jays at Rogers Centre with 41877.8 avg,
+San Francisco Giants at AT&T Park with 41546.4 avg,
+Chicago Cubs at Wrigley Field with 39906.419 avg
+Note: if possible, would have joined actived franchise table, but has no correlation to any data used.
+Keys do not match.
+Tampa Bay Rays at Tropicana Field with 15878.6 avg,
+Oakland Athletics at Oakland-Alameda Country Coliseum with 18784.0 avg,
+Cleveland Blues at Progressive Field with 19650.21 avg,
+Miami Marlins at Marlins Park with 21405.2 avg,
+Chicago White Sox at U.S.Cellular Field with 21559.2 avg*/
+
+WITH 
+managward_NL AS (
+	SELECT awardsmanagers.playerid, yearid, lgid
+	FROM awardsmanagers
+	LEFT JOIN people
+	ON awardsmanagers.playerid = people.playerid
+	WHERE 
+	lgid = 'NL'
+	AND
+	awardid = 'TSN Manager of the Year'
+),
+managward_AL AS (
+	SELECT awardsmanagers.playerid, yearid, lgid
+	FROM awardsmanagers
+	LEFT JOIN people
+	ON awardsmanagers.playerid = people.playerid
+	WHERE
+	lgid = 'AL'
+	AND
+	awardid = 'TSN Manager of the Year'
+)
+	SELECT CONCAT(namefirst, ' ', namelast) AS name, franchname,
+	FROM people
+	LEFT JOIN teams
+	ON 
+	
+	WHERE playerid AND yearid IN(
+		SELECT m.playerid, m.yearid, m.lgid, a.yearid, a.lgid
+		FROM managward_NL m
+		INNER JOIN managward_AL a
+		ON m.playerid = a.playerid)
+--try to connect to teamsfranchises table to get the name of the managers during that year. Probs gonna have to go through the teams table.
