@@ -180,35 +180,56 @@ Cleveland Blues at Progressive Field with 19650.21 avg,
 Miami Marlins at Marlins Park with 21405.2 avg,
 Chicago White Sox at U.S.Cellular Field with 21559.2 avg*/
 
-WITH 
-managward_NL AS (
-	SELECT awardsmanagers.playerid, yearid, lgid
-	FROM awardsmanagers
-	LEFT JOIN people
-	ON awardsmanagers.playerid = people.playerid
-	WHERE 
-	lgid = 'NL'
-	AND
-	awardid = 'TSN Manager of the Year'
-),
-managward_AL AS (
-	SELECT awardsmanagers.playerid, yearid, lgid
-	FROM awardsmanagers
-	LEFT JOIN people
-	ON awardsmanagers.playerid = people.playerid
-	WHERE
-	lgid = 'AL'
-	AND
-	awardid = 'TSN Manager of the Year'
-)
-	SELECT CONCAT(namefirst, ' ', namelast) AS name, franchname,
-	FROM people
-	LEFT JOIN teams
-	ON 
+/*SELECT a.yearid, a.playerid, CONCAT(p.namefirst,' ',namelast) AS name, a.awardid, a.lgid, m.teamid, t.name
+FROM awardsmanagers a
+LEFT JOIN people p ON a.playerid = p.playerid
+LEFT JOIN managers m ON a.playerid = m.playerid
+AND
+a.yearid = m.yearid
+LEFT JOIN teams t ON m.teamid = t.teamid
+AND m.yearid = t.yearid
+WHERE a.awardid ILIKE '%TSN%'
+AND
+a.playerid IN(
+	SELECT playerid
+	FROM awardsmanagers a
+	WHERE a.awardid ILIKE '%TSN%'
+	AND a.lgid = 'AL'
+	INTERSECT
+	SELECT playerid
+	FROM awardsmanagers a
+	WHERE a.awardid ILIKE '%TSN%'
+	AND a.lgid = 'NL');
 	
-	WHERE playerid AND yearid IN(
-		SELECT m.playerid, m.yearid, m.lgid, a.yearid, a.lgid
-		FROM managward_NL m
-		INNER JOIN managward_AL a
-		ON m.playerid = a.playerid)
---try to connect to teamsfranchises table to get the name of the managers during that year. Probs gonna have to go through the teams table.
+Q9: Jim Leyland and Davey Johnson have won both.*/
+--Below queries all have to do with question 10
+/*SELECT schools.schoolname, COUNT(DISTINCT c.playerid) AS player_count
+FROM schools
+LEFT JOIN collegeplaying c
+ON schools.schoolid = c.schoolid
+WHERE schoolstate = 'TN'
+GROUP BY schools.schoolname
+ORDER BY player_count DESC;
+
+Player counts in Major Leagues:
+University of TN: 41
+Vandy: 24
+University of Memphis: 14
+Middle TN State: 9
+TN State: 8*/
+
+/*SELECT schools.schoolname, AVG(salary) avg_major_sal
+FROM schools
+LEFT JOIN collegeplaying c ON schools.schoolid = c.schoolid
+LEFT JOIN salaries ON c.playerid = salaries.playerid
+WHERE schoolstate = 'TN' AND salaries.salary IS NOT NULL
+GROUP BY schools.schoolname
+HAVING COUNT(c.playerid) > '8'
+ORDER BY avg_major_sal DESC;
+
+The colleges that produce the highest average paid MLB players are
+Carson-Newman College with an avg of 3087000
+University of Memphis with an avg of 2824842.16
+Lincoln Memorial University with an avg of 2519807.69
+University of Tennessee with an avg of 2518713.47
+Vanderbilt University with an avg of 2115023.92*/
