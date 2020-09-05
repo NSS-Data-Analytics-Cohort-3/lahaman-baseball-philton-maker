@@ -248,12 +248,13 @@ ORDER BY player_count DESC) AS subquery;
 
 The above query is to find the average number of MLB players per college (73.8).*/
 
-/*SELECT AVG(salary) avg_major_sal
+SELECT schools.schoolname, AVG(salary) avg_major_sal
 FROM schools
 LEFT JOIN collegeplaying c ON schools.schoolid = c.schoolid
 LEFT JOIN salaries ON c.playerid = salaries.playerid
 WHERE salaries.salary IS NOT NULL
+GROUP BY schools.schoolname
 HAVING COUNT(c.playerid) >= '70'
-ORDER BY avg_major_sal DESC;
+ORDER BY avg_major_sal;
 
-Above query finds average salary.*/
+--Above query finds average salary.*/
