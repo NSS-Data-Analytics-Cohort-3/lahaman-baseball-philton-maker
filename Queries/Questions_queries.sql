@@ -233,3 +233,27 @@ University of Memphis with an avg of 2824842.16
 Lincoln Memorial University with an avg of 2519807.69
 University of Tennessee with an avg of 2518713.47
 Vanderbilt University with an avg of 2115023.92*/
+
+
+/*SELECT ROUND(AVG(player_count),2)
+FROM(
+	SELECT schools.schoolname, COUNT(c.playerid) AS player_count
+FROM schools
+LEFT JOIN collegeplaying c ON schools.schoolid = c.schoolid
+LEFT JOIN salaries ON c.playerid = salaries.playerid
+WHERE salaries.salary IS NOT NULL
+GROUP BY schools.schoolname
+HAVING COUNT(c.playerid) > '8'
+ORDER BY player_count DESC) AS subquery;
+
+The above query is to find the average number of MLB players per college (73.8).*/
+
+/*SELECT AVG(salary) avg_major_sal
+FROM schools
+LEFT JOIN collegeplaying c ON schools.schoolid = c.schoolid
+LEFT JOIN salaries ON c.playerid = salaries.playerid
+WHERE salaries.salary IS NOT NULL
+HAVING COUNT(c.playerid) >= '70'
+ORDER BY avg_major_sal DESC;
+
+Above query finds average salary.*/
