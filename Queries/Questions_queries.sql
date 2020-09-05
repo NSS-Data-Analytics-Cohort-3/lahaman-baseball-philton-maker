@@ -24,14 +24,14 @@ WHERE schoolid ILIKE 'vandy';*/
 
 --above query to figure out vandy school ID
 
-/*SELECT p.playerid, p.nameFirst, p.nameLast, SUM(s.salary) AS total_salary
+/*SELECT  DISTINCT p.playerid, p.nameFirst, p.nameLast, SUM(s.salary) AS total_salary
 FROM salaries s
 LEFT JOIN people p
 ON s.playerid = p.playerid
 LEFT JOIN collegeplaying c
 ON c.playerid = s.playerid
 WHERE schoolid = 'vandy'
-GROUP BY p.playerid
+GROUP BY DISTINCT p.playerid
 ORDER BY SUM(s.salary) DESC;
 
 Q3 The highest paid player from Vandy was David Price with a total salary of 245553888 in the majors.*/
@@ -80,12 +80,12 @@ ORDER BY year_bin;
 Q5: There was a spike in both averages beginnings in the 50's for homeruns and the 60's for strikeouts, both of which tapered off again over the next few decades*/
 
 
-/*WITH subquery AS(
+WITH subquery AS(
 
 	SELECT yearid, playerid, sb, cs, (sb + cs) AS stolen_atmpt
 	FROM batting
 	WHERE sb > '0' Or cs > '0'
-	UNION ALL
+	UNION 
 	SELECT yearid, playerid, sb, cs, (sb + cs) AS stolen_atmpt
 	FROM battingpost
 	WHERE sb > '0' OR cs > '0'
@@ -101,7 +101,7 @@ WHERE yearid = '2016' AND stolen_atmpt >= '20'
 GROUP BY playername
 ORDER BY stl_sccss DESC;
 
-Q6: Chris Owings with %91.304 success rate */
+--Q6: Chris Owings with %91.304 success rate 
 
 /*SELECT name, MAX(w)
 FROM teams
@@ -248,7 +248,7 @@ ORDER BY player_count DESC) AS subquery;
 
 The above query is to find the average number of MLB players per college (73.8).*/
 
-SELECT schools.schoolname, AVG(salary) avg_major_sal
+/*SELECT schools.schoolname, AVG(salary) avg_major_sal
 FROM schools
 LEFT JOIN collegeplaying c ON schools.schoolid = c.schoolid
 LEFT JOIN salaries ON c.playerid = salaries.playerid
